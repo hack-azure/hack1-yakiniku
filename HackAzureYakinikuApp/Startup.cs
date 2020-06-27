@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Stripe;
 
 using Stripe;
 
@@ -29,12 +30,14 @@ namespace HackAzureYakinikuApp
             services.AddControllersWithViews();
 
             ConfigureStripe();
+
+            services.AddSingleton<IConfiguration>(this.Configuration);
+            services.AddSingleton<PaymentIntentService>();
         }
 
         private void ConfigureStripe()
         {
             string secretKey = this.Configuration["STRIPE_SECRET_KEY"];
-
             StripeConfiguration.ApiKey = secretKey;
         }
 
