@@ -33,6 +33,7 @@ namespace HackAzureYakinikuApp
 
             services.AddSingleton<IConfiguration>(this.Configuration);
             services.AddSingleton<PaymentIntentService>();
+            services.AddSingleton<BalanceService>();
         }
 
         private void ConfigureStripe()
