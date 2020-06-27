@@ -6,20 +6,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using HackAzureYakinikuApp.Models;
+using Stripe;
 
 namespace HackAzureYakinikuApp.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly BalanceService balanceService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, BalanceService balanceService)
         {
             _logger = logger;
+            this.balanceService = balanceService;
         }
 
         public IActionResult Index()
         {
+            var balance = balanceService.Get(new RequestOptions()
+            {
+            });
+            var yakiniku = new YakinikuViewModel()
+            {
+                Balance = balance.Pending.Sum(x => x.Amount),
+            };
+
+            ViewBag.Yakiniku = yakiniku;
             return View();
         }
 
