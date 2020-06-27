@@ -1,0 +1,32 @@
+name: Deploy ARM Template
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/deploy-arm-template.yml"
+      - "azure/azuredeploy.json"
+
+jobs:
+  deploy-verification-template:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@master
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy ARM Template
+        uses: azure/CLI@v1
+        with:
+          inlineScript: >
+            az deployment group create
+            --no-prompt
+            --mode Complete
+            --resource-group yakiniku
+            --template-file ./arm/azuredeploy.json
+            --parameters @./arm/azuredeploy.parameters.json
